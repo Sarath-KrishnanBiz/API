@@ -537,8 +537,8 @@ app.post('/campaignwiseprospectcountapi', (req, res) => {
 
 // LEADSFUNNEL
 app.post('/leadsfunnel', (req, res) => {
-  // let Conversiontype = req.body.Conversiontype;
-  let sql = "select count(id) leadscount from tblleads union all SELECT count(d.txtConversionType) as NoOfLeads FROM tblleads a JOIN tblleadcampaignmap b ON a.id = b.refLeadId JOIN tblactivity c ON b.id = c.refMapid JOIN tblconversiontype d ON c.refConversionStatus = d.id where d.txtConversionType = 'New' or d.txtConversionType = 'Working' group by d.txtConversionType"
+  let Conversiontype = req.body.Conversiontype;
+  let sql = "select count(id) leadscount from tblleads union all SELECT count(d.txtConversionType) as NoOfLeads FROM tblleads a JOIN tblleadcampaignmap b ON a.id = b.refLeadId JOIN tblactivity c ON b.id = c.refMapid JOIN tblconversiontype d ON c.refConversionStatus = d.id where d.txtConversionType = 'Nurturing ' or d.txtConversionType = '" + Conversiontype + "' group by d.txtConversionType;"
   con.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result)
@@ -649,6 +649,24 @@ app.post("/gettasklistwithfilter", (req, res) => {
     })
   })
 
+  // LEADBULKINSERT
+
+  app.post("/Leadbulkinsert", (req, res) => {
+    let Suffix = req.body.Suffix;
+    let Firstname = req.body.Firstname;
+    let Companyname = req.body.Companyname;
+    let Phone = req.body.Phone;
+    let Email = req.body.Email;
+    let Address = req.body.Address;
+    // let sql = "select * from tblleads" ;
+      let sql1 = "insert into tblleads(txtSuffix,txtFirstName,txtCompanyName,txtPhone,txtEmail,txtAddress) values('" + Suffix + "','" + Firstname + "','" + Companyname + "','"+Phone+"','"+Email+"','"+Address+"'),('" + Suffix + "','" + Firstname + "','" + Companyname + "','"+Phone+"','"+Email+"','"+Address+"');"
+      con.query(sql1, function (err, result) {
+        if (err) throw err;
+        console.log("Result" + result);
+        res.send("Updated" + result)
+      })
+    })
+  
 
 
 app.listen(port, () => {
